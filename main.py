@@ -95,24 +95,32 @@ def display_title_screen(config):
                     display_game_mode_screen(2)
                     game.play_game()
                 elif keys[pygame.K_3]:
-                    with open("winner.pickle", "rb") as f:
-                        winner = pickle.load(f)
-                    game = PongNeatAI(WIN, WIDTH, HEIGHT, 3)
-                    display_game_mode_screen(3)
-                    game.play_ai(winner, config)
-               
+                    try:
+                        with open("winner.pickle", "rb") as f:
+                            winner = pickle.load(f)
+                        game = PongNeatAI(WIN, WIDTH, HEIGHT, 3)
+                        display_game_mode_screen(3)
+                        game.play_ai(winner, config)
+                    # if the training file is not found, prompt the user to run the training algorithm
+                    except IOError:
+                        display_game_mode_screen(4)
+                        display_game_mode_screen(0)
+                        run_neat(config)
+
 
 def display_game_mode_screen(game_mode):
     '''(int) -> Nonetype
     This function is used to display the description of the game mode selected by the user.
     It allows the user to either continue with their choice or return to the main menu.
     '''
-    # set the background colour as black and the title and regular text fonts
+    # set the background colour as black and the title & regular text fonts
     WIN.fill(BLACK)
     title_font = pygame.font.SysFont("verdana", 30)
     text_font = pygame.font.SysFont("verdana", 16)
+    show_countdown = True
 
     # store the title and description texts depending on the selected game mode
+    # note: game_mode == 4 represents the case where option 3 was selected but the file 'winner.pickle' was not found
     if game_mode == 0:
         title_text = title_font.render("0 - TRAINING WITH NEAT", 1, WHITE)
         description_text1 = text_font.render("Watch as the NEAT algorithm trains the AI to play PONG.", 1, WHITE)
@@ -133,6 +141,12 @@ def display_game_mode_screen(game_mode):
         description_text1 = text_font.render("Play a single-player game against the AI trained using the NEAT algorithm.", 1, WHITE)
         description_text2 = text_font.render("First to 5 points wins!", 1, WHITE)
         description_text3 = text_font.render("(Spoiler: You won't win)", 1, WHITE)
+    elif game_mode == 4:
+        title_text = title_font.render("ERROR - TRAINING FILE NOT FOUND", 1, WHITE)
+        description_text1 = text_font.render("Please ensure that the file \'winner.pickle\' is saved in the same folder as \'main.py\'", 1, WHITE)
+        description_text2 = text_font.render("If you have the file, save it and restart the program.", 1, WHITE)
+        description_text3 = text_font.render("If you do not, press [ENTER] to run the training algorithm.", 1, WHITE)
+        show_countdown = False
     return_text = text_font.render("[ESC] - Return to the title screen", 1, WHITE)
     continue_text = text_font.render("[ENTER] - Continue", 1, WHITE)
     
@@ -160,13 +174,10 @@ def display_game_mode_screen(game_mode):
                     display_title_screen(config)
                 elif keys[pygame.K_RETURN]:
                     run = False
-    countdown()
+    if show_countdown: countdown()
 
 
 if __name__ == '__main__':
     config = get_config()
     display_title_screen(config)
-
-
-
 
