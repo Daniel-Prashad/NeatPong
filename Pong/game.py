@@ -1,7 +1,8 @@
-import pygame
-
 from .ball import Ball
 from .paddle import Paddle
+from .helper_functions import countdown, pause
+
+import pygame
 
 pygame.init()
 
@@ -228,20 +229,6 @@ class Game:
         pygame.display.update()
 
 
-    def countdown(self):
-        '''(Game) -> Nonetype
-        This function is used to display a countdown before starting a game so that the player(s) can prepare.
-        '''
-        for i in range(3, -1, -1):
-            self.window.fill(self.BLACK)
-            if i == 0:
-                text = self.COUNTDOWN_FONT.render("START!", 1, self.WHITE)
-            else:
-                text = self.COUNTDOWN_FONT.render(f"{i}", 1, self.WHITE)
-            self.window.blit(text, (self.width//2 - text.get_width()//2, self.height//2 - text.get_height()//2))
-            pygame.display.update()
-            pygame.time.delay(1000)
-
     def if_won(self):
         '''(Game) -> Nonetype
         This function checks if the game has been won, displays the appropriate winning message and resets the game.'''
@@ -282,7 +269,7 @@ class Game:
                             run = False
                         elif keys[pygame.K_n]:
                             quit()
-            self.countdown()
+            countdown()
             self.reset()
 
 
@@ -315,10 +302,13 @@ class Game:
             self.draw()
             
             for event in pygame.event.get():
-                # if the user closes the window, quit the game by stopping the main loop
+                # allow the user to quit or pause the game
                 if event.type == pygame.QUIT:
                     run = False
                     quit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:
+                        pause(self.window)
 
             # store the current state of all keyboard buttons and handle any paddle movements
             keys = pygame.key.get_pressed()

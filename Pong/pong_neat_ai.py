@@ -1,5 +1,7 @@
-from Pong.paddle import Paddle
+from .paddle import Paddle
+from .helper_functions import pause
 from .game import Game
+
 import pygame
 import neat
 import pickle
@@ -94,6 +96,7 @@ class PongNeatAI:
         '''(PongNeatAI, Window, int, int, int) -> Nonetype
         This function sets up a game of Pong to be used to train the AI.
         '''
+        self.window = window
         self.game_mode = game_mode
         self.game = Game(window, width, height, self.game_mode)
         self.ball = self.game.ball
@@ -178,11 +181,14 @@ class PongNeatAI:
         clock = pygame.time.Clock()
         while run:
             clock.tick(self.game.FPS)
-            # allow the user to quit the game
+            # allow the user to quit or pause the game
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
                     quit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:
+                        pause(self.window)
             
             # handle the left paddle's movements based on the user's input
             keys = pygame.key.get_pressed()
@@ -199,4 +205,3 @@ class PongNeatAI:
 
             # check if the game has been won
             self.game.if_won()
-

@@ -1,6 +1,7 @@
 from Pong.game import Game
 from Pong.pong_neat_ai import PongNeatAI
 from Pong.pong_neat_ai import run_neat
+from Pong.helper_functions import countdown
 
 import neat
 import os
@@ -26,24 +27,6 @@ def get_config():
     # define the properties from the configuration file that will be used
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, config_path)
     return(config)
-
-
-def countdown():
-    '''() -> Nonetype
-    This function is used to display a countdown before starting a game so that the player(s) can prepare.
-    '''
-    # set the font for the countdown
-    count_down_font = pygame.font.SysFont("impact", 100)
-    # display the countdown
-    for i in range(3, -1, -1):
-        WIN.fill(BLACK)
-        if i == 0:
-            text = count_down_font.render("START!", 1, WHITE)
-        else:
-            text = count_down_font.render(f"{i}", 1, WHITE)
-        WIN.blit(text, (WIDTH//2 - text.get_width()//2, HEIGHT//2 - text.get_height()//2))
-        pygame.display.update()
-        pygame.time.delay(1000)
 
 
 def display_title_screen(config):
@@ -130,16 +113,16 @@ def display_game_mode_screen(game_mode):
         title_text = title_font.render("1 - BASIC SINGLE-PLAYER GAME", 1, WHITE)
         description_text1 = text_font.render("Play a single-player game where the opposing paddle simply tracks the ball.", 1, WHITE)
         description_text2 = text_font.render("This may seem difficult at first, but there is a huge exploit. Can you find it?", 1, WHITE)
-        description_text3 = text_font.render("First to 5 points wins!", 1, WHITE)
+        description_text3 = text_font.render("Use [P] to pause and unpause the game. First to 5 points wins!", 1, WHITE)
     elif game_mode == 2:
         title_text = title_font.render("2 - TWO-PLAYER GAME", 1, WHITE)
         description_text1 = text_font.render("Play a two-player game.", 1, WHITE)
         description_text2 = text_font.render("Left player controls: [W] & [S] \ Right player controls: [UP] & [DOWN]", 1, WHITE)
-        description_text3 = text_font.render("First to 5 points wins!", 1, WHITE)
+        description_text3 = text_font.render("Use [P] to pause and unpause the game. First to 5 points wins!", 1, WHITE)
     elif game_mode == 3:
         title_text = title_font.render("3 - SINGLE PLAYER GAME AGAINST AI", 1, WHITE)
         description_text1 = text_font.render("Play a single-player game against the AI trained using the NEAT algorithm.", 1, WHITE)
-        description_text2 = text_font.render("First to 5 points wins!", 1, WHITE)
+        description_text2 = text_font.render("Use [P] to pause and unpause the game. First to 5 points wins!", 1, WHITE)
         description_text3 = text_font.render("(Spoiler: You won't win)", 1, WHITE)
     elif game_mode == 4:
         title_text = title_font.render("ERROR - TRAINING FILE NOT FOUND", 1, WHITE)
@@ -180,4 +163,3 @@ def display_game_mode_screen(game_mode):
 if __name__ == '__main__':
     config = get_config()
     display_title_screen(config)
-
